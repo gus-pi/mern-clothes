@@ -11,7 +11,7 @@ import { Textarea } from '../ui/textarea';
 import { Button } from '../ui/button';
 import { FormEvent } from 'react';
 
-interface FormControl {
+export interface FormControl {
   name: string;
   label: string;
   placeholder?: string;

@@ -13,9 +13,10 @@ import AccountPage from './pages/shopping-view/AccountPage';
 import CheckOutPage from './pages/shopping-view/CheckOutPage';
 import ShopListing from './pages/shopping-view/ShopListing';
 import CheckAuth from './components/common/CheckAuth';
+import UnauthPage from './pages/unauth-page';
 
 function App() {
-  const isAuthenticated = false;
+  const isAuthenticated = true;
   const user = { role: 'user' };
 
   return (
@@ -57,6 +58,7 @@ function App() {
           <Route path="account" element={<AccountPage />} />
         </Route>
         <Route path="*" element={<NotFound />} />
+        <Route path="/unauth-page" element={<UnauthPage />} />
       </Routes>
     </div>
   );

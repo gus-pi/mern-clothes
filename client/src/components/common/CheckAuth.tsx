@@ -9,7 +9,13 @@ type CheckAuthProps = {
 const CheckAuth = ({ isAuthenticated, user, children }: CheckAuthProps) => {
   const location = useLocation();
 
-  if (!isAuthenticated && location.pathname.includes('login')) {
+  if (
+    !isAuthenticated &&
+    !(
+      location.pathname.includes('login') ||
+      location.pathname.includes('register')
+    )
+  ) {
     return <Navigate to="/auth/login" />;
   }
 

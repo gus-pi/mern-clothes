@@ -1,46 +1,120 @@
-import { formControlType } from '@/config';
-import { Label } from '../ui/label';
 import { Input } from '../ui/input';
+import { Label } from '../ui/label';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '../ui/select';
+import { Textarea } from '../ui/textarea';
+import { Button } from '../ui/button';
+import { FormEvent } from 'react';
 
-const CommonForm = ({ formControls }: { formControls: formControlType[] }) => {
-  const renderInputsByComponentType = (getControlItem: formControlType) => {
-    let element = null;
+interface FormControl {
+  name: string;
+  label: string;
+  placeholder?: string;
+  type?: string;
+  componentType: 'input' | 'select' | 'textarea';
+  options?: { id: string; label: string }[];
+}
+
+interface CommonFormProps {
+  formControls: FormControl[];
+  formData: Record<string, string>;
+  setFormData: (data: Record<string, string>) => void;
+  onSubmit: (event: FormEvent) => void;
+  buttonText?: string;
+  isBtnDisabled?: boolean;
+}
+
+function CommonForm({
+  formControls,
+  formData,
+  setFormData,
+  onSubmit,
+  buttonText = 'Submit',
+  isBtnDisabled,
+}: CommonFormProps) {
+  function renderInputsByComponentType(getControlItem: FormControl) {
+    const value = formData[getControlItem.name] || '';
+
     switch (getControlItem.componentType) {
       case 'input':
-        element = (
+        return (
           <Input
             name={getControlItem.name}
             placeholder={getControlItem.placeholder}
             id={getControlItem.name}
             type={getControlItem.type}
+            value={value}
+            onChange={(event) =>
+              setFormData({
+                ...formData,
+                [getControlItem.name]: event.target.value,
+              })
+            }
           />
         );
-        break;
+      case 'select':
+        return (
+          <Select
+            onValueChange={(value) =>
+              setFormData({
+                ...formData,
+                [getControlItem.name]: value,
+              })
+            }
+            value={value}
+          >
+            <SelectTrigger className="w-full">
+              <SelectValue placeholder={getControlItem.label} />
+            </SelectTrigger>
+            <SelectContent>
+              {getControlItem.options?.map((optionItem) => (
+                <SelectItem key={optionItem.id} value={optionItem.id}>
+                  {optionItem.label}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        );
+      case 'textarea':
+        return (
+          <Textarea
+            name={getControlItem.name}
+            placeholder={getControlItem.placeholder}
+            id={getControlItem.name}
+            value={value}
+            onChange={(event) =>
+              setFormData({
+                ...formData,
+                [getControlItem.name]: event.target.value,
+              })
+            }
+          />
+        );
       default:
-        element = (
-          <Input
-            name={getControlItem.name}
-            placeholder={getControlItem.placeholder}
-            id={getControlItem.name}
-            type={getControlItem.type}
-          />
-        );
-        break;
+        return null;
     }
-    return element;
-  };
+  }
 
   return (
-    <form action="">
+    <form onSubmit={onSubmit}>
       <div className="flex flex-col gap-3">
-        {formControls.map((controlItem: formControlType) => (
-          <div key={controlItem.name} className="grid w-full gap-1.5">
+        {formControls.map((controlItem) => (
+          <div className="grid w-full gap-1.5" key={controlItem.name}>
             <Label className="mb-1">{controlItem.label}</Label>
-            {renderInputsByComponentType}
+            {renderInputsByComponentType(controlItem)}
           </div>
         ))}
       </div>
+      <Button disabled={isBtnDisabled} type="submit" className="mt-2 w-full">
+        {buttonText}
+      </Button>
     </form>
   );
-};
+}
+
 export default CommonForm;

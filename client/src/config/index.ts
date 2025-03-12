@@ -1,11 +1,3 @@
-export type formControlType = {
-  name: string;
-  label: string;
-  placeholder: string;
-  componentType: string;
-  type: string;
-};
-
 export const registerFormControls = [
   {
     name: 'userName',
